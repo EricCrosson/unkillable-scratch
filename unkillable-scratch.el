@@ -29,6 +29,10 @@
 
 ;; (unkillable-scratch 1)
 
+;; Thanks to
+;; [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki:
+;; Recreate Scratch Buffer]]
+
 ;;; Code
 (defgroup scratch nil
   "*Scratch* buffer."
