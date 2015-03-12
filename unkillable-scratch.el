@@ -33,7 +33,7 @@
 ;; [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki:
 ;; Recreate Scratch Buffer]]
 
-;;; Code
+;;; Code:
 (defgroup scratch nil
   "*Scratch* buffer."
   :group 'scratch)
