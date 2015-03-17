@@ -38,7 +38,6 @@
   "*Scratch* buffer."
   :group 'scratch)
 
-;;;###autoload
 (defun unkillable-scratch-buffer ()
   "A hook designed to be added to hook
 `kill-buffer-query-functions' to prevent the *scratch* buffer
