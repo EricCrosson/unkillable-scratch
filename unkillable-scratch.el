@@ -1,5 +1,5 @@
-;;; unkillable-scratch.el --- Disallow the *scratch* buffer from being killed
-;; Version: 0.0.20140311
+;;; unkillable-scratch.el --- Disallow buffers from being killed by regexp -- default is *scratch* buffer
+;; Version: 0.0.20140318
 
 ;; Copyright (C) 2015 Eric Crosson
 
@@ -20,10 +20,26 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+;;; TODO
+
+;; unkillable-scratch-really-kill
+;;   actually kill the selected buffer at point. If this buffer was
+;;   the last matching buffer to the regexp(s) keeping him from being
+;;   killed, remove said regexp(s) from `unkillable-buffers'.
+
 ;;; Commentary:
 
-;; This package provides a minor mode that will disallow the *scratch*
-;; buffer from being killed.
+;; This package provides a minor mode that will disallow buffers from
+;; being killed. Any buffer matching a regexp in the list
+;; `unkillable-buffers' will not be killed.
+
+;; Only one bufer is in `unkillable-buffers' by default: the *scratch*
+;; buffer.
+
+;; The *scratch* buffer is considered specially; in the event of a
+;; call to `kill-buffer' it will be regenerated (populated only with
+;; `initial-scratch-message'.) Removing the regexp matching *scratch*
+;; from `unkillable-buffers' disables this behavior.
 
 ;; Usage:
 
