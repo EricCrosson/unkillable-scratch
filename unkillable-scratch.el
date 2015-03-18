@@ -44,6 +44,8 @@
 ;; Usage:
 
 ;; (unkillable-scratch 1)
+;;   - or -
+;; M-x unkillable-scratch
 
 ;; Thanks to
 ;; [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki:
