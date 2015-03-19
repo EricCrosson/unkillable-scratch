@@ -69,6 +69,17 @@
   :type '(repeat string)
   :group 'scratch)
 
+(defcustom unkillable-scratch-behavior 'do-nothing
+  "The action which `unkillable-scratch-buffer' applies to
+buffers matching regexp's in `unkillable-buffers'.
+
+- 'do-nothing :: disallow the buffer from being killed (default)
+- 'bury :: bury the buffer instead of killing it
+- 'kill :: actually kill the buffer -- this is the same as disabling
+           `unkillable-scratch'."
+  :type 'symbol
+  :group 'scratch)
+
 (defun unkillable-scratch-matches (buf)
   "True if buffer name BUF matches any regexp contained in
 variable `unkillable-buffers'."
@@ -91,7 +102,9 @@ be regenerated. All other buffers will simply not be killed."
       (when (equal buf "*scratch*")
 	(delete-region (point-min) (point-max))
 	(insert (or initial-scratch-message "")))
-      nil)))
+      (cond ((eq unkillable-scratch-behavior 'kill) t)
+	    ((eq unkillable-scratch-behavior 'bury) (bury-buffer) nil)
+	    (t nil)))))
 
 ;;;###autoload
 (define-minor-mode unkillable-scratch
