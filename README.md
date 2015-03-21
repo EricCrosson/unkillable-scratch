@@ -1,4 +1,4 @@
-# unkillable-scratch ![Travis CI](https://travis-ci.org/EricCrosson/unkillable-scratch.svg?branch=master)
+# unkillable-scratch ![Travis CI](https://travis-ci.org/EricCrosson/unkillable-scratch.svg?branch=master) [![MELPA](http://melpa.org/packages/unkillable-scratch-badge.svg)](http://melpa.org/#/unkillable-scratch)
 
 Disallow the scratch buffer from being killed.
 
