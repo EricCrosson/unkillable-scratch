@@ -99,10 +99,10 @@ be regenerated. All other buffers will simply not be killed."
   (let ((buf (buffer-name (current-buffer))))
     (if (not (unkillable-scratch-matches buf))
 	t
-      (when (equal buf "*scratch*")
-	(delete-region (point-min) (point-max))
-	(insert (or initial-scratch-message "")))
-      (cond ((eq unkillable-scratch-behavior 'kill) t)
+      (cond ((eq unkillable-scratch-behavior 'kill)
+	     (when (equal buf "*scratch*")
+	       (delete-region (point-min) (point-max))
+	       (insert (or initial-scratch-message "")))t)
 	    ((eq unkillable-scratch-behavior 'bury) (bury-buffer) nil)
 	    (t nil)))))
 
