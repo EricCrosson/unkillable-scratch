@@ -23,7 +23,7 @@ is attempted on a buffer matching one or more of the regexp's in the list
 `unkillable-buffers`. The following values are supported
 
 | Setting       | Meaning                                             |
-|---------------+-----------------------------------------------------|
+|--------------:|-----------------------------------------------------|
 | `'do-nothing` | disallow the attempted kill from occurring          |
 | `'bury`       | bury the buffer instead of killing it               |
 | `'kill`       | kill the buffer -- same as disabling the minor mode |
