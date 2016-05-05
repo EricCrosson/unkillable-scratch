@@ -20,7 +20,15 @@ Usage
 
 The variable `unkillable-scratch-behavior` defines the action taken when a kill
 is attempted on a buffer matching one or more of the regexp's in the list
-`unkillable-buffers`. The following values are supported
+`unkillable-buffers`. This list will only match one buffer by default, the
+`*scratch*` buffer.
+
+This package treats the `*scratch*` buffer specially; in the event of a call to
+`kill-buffer` the buffer contents will be replaced with
+`initial-scratch-message`. Removing the regexp matching `*scratch*` from
+`unkillable-buffers` disables this behavior.
+
+The following values of `unkillable-scratch-behavior` are supported
 
 | Setting       | Meaning                                             |
 |--------------:|-----------------------------------------------------|
