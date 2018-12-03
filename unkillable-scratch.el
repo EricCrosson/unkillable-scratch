@@ -106,7 +106,7 @@ The following values are recognized:
   "Apply the `unkillable-scratch-behavior' to the buffer passed to
 `kill-buffer-query-functions'."
   (let ((buf (buffer-name (current-buffer))))
-    (when (unkillable-scratch-matches buf)
+    (if (unkillable-scratch-matches buf)
       (cond ((eq unkillable-scratch-behavior 'kill) t)
             ((eq unkillable-scratch-behavior 'bury) (progn
                                                       (when (equal buf "*scratch*")
@@ -116,7 +116,8 @@ The following values are recognized:
             (t  (progn
                   (when (equal buf "*scratch*")
                     (unkillable-scratch-reset-scratch-buffer))
-                  nil))))))
+                  nil)))
+      t)))
 
 ;;;###autoload
 (define-minor-mode unkillable-scratch
