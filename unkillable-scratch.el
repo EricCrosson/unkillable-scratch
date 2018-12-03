@@ -1,36 +1,36 @@
-;;; unkillable-scratch.el --- Disallow buffers from being killed by regexp -- default is *scratch* buffer
-;; Version: 0.0.20140318
-
-;; Copyright (C) 2015 Eric Crosson
-
-;; Author: Eric Crosson <esc@ericcrosson.com>
-;; Keywords: scratch
-;; Package-Version: 0.1
-
-;; This program is free software: you can redistribute it and/or modify
+;;; unkillable-scratch.el --- Disallow the \*scratch\* buffer from being killed
+;;
+;;; Copyright (C) 2018  Free Software Foundation, Inc.
+;;
+;; Author: Eric Crosson <eric.s.crosson@utexas.com>
+;; Version: 1.0.0
+;; Keywords: convenience
+;; URL: https://github.com/EricCrosson/unkillable-scratch
+;; Package-Requires: ((emacs "24"))
+;;
+;; This file is not a part of GNU Emacs.
+;;
+;;
+;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+;;
+;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;;
 ;; You should have received a copy of the GNU General Public License
-;; along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-;;; TODO
-
-;; unkillable-scratch-really-kill
-;;   actually kill the selected buffer at point. If this buffer was
-;;   the last matching buffer to the regexp(s) keeping him from being
-;;   killed, remove said regexp(s) from `unkillable-buffers'.
-
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+;;
+;;
 ;;; Commentary:
-
+;;
 ;; This package provides a minor mode that will disallow buffers from
-;; being killed. Any buffer matching a regexp in the list
+;; being killed.  Any buffer matching a regexp in the list
 ;; `unkillable-buffers' will not be killed.
 
 ;; Only one bufer is in `unkillable-buffers' by default: the *scratch*
@@ -38,7 +38,7 @@
 
 ;; The *scratch* buffer is considered specially; in the event of a call to
 ;; `kill-buffer' the buffer will be replaced with
-;; `initial-scratch-message'. Removing the regexp matching *scratch* from
+;; `initial-scratch-message'.  Removing the regexp matching *scratch* from
 ;; `unkillable-buffers' disables this behavior.
 
 ;; Usage:
@@ -52,14 +52,20 @@
 ;;   - or -
 ;; M-x unkillable-scratch
 
-;; Conception thanks to
-;; [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki:
-;; Recreate Scratch Buffer]]
+;;; TODO:
 
-;; Idea to make the `unkillable-buffers' list thanks to
-;; Donald Curtis (milkypostman)
+;; - unkillable-scratch-really-kill
+;;     actually kill the selected buffer at point.  If this buffer was
+;;     the last matching buffer to the regexp(s) keeping him from being
+;;     killed, remove said regexp(s) from `unkillable-buffers'.
+;;
+;; - defcustom unkillable-scratch-do-not-reset-scratch-buffer
+;;     never repopulate the scratch buffer with `initial-scratch-message'
+;;
+
 
 ;;; Code:
+
 (defgroup scratch nil
   "*Scratch* buffer."
   :group 'scratch)
@@ -69,42 +75,48 @@
   :type '(repeat string)
   :group 'scratch)
 
-(defcustom unkillable-scratch-behavior 'do-nothing
-  "The action which `unkillable-scratch-buffer' applies to
-buffers matching regexp's in `unkillable-buffers'.
+(defcustom unkillable-scratch-behavior 'bury
+  "Desired action for `unkillable-scratch-buffer' to apply to
+buffers matching regexps in `unkillable-buffers'.
 
-- 'do-nothing :: disallow the buffer from being killed (default)
-- 'bury :: bury the buffer instead of killing it
-- 'kill :: actually kill the buffer -- this is the same as disabling
-           `unkillable-scratch'."
+The following values are recognized:
+
+- 'bury       :: bury the buffer instead of killing it (default)
+- 'do-nothing :: disallow the buffer from being killed
+- 'kill       :: actually kill the buffer -- this is the same as disabling `unkillable-scratch'."
   :type 'symbol
   :group 'scratch)
 
-(defun unkillable-scratch-matches (buf)
-  "True if buffer name BUF matches any regexp contained in
-variable `unkillable-buffers'."
+(defun unkillable-scratch-matches (buffer-name)
+  "True when BUFFER-NAME matches any regexp contained in `unkillable-buffers'."
   (let ((match t))
     (catch 'match
-      (mapc (lambda (regexp) (when (string-match regexp buf) (throw 'match nil)))
+      (mapc (lambda (regexp) (when (string-match regexp buffer-name) (throw 'match nil)))
 	    unkillable-buffers)
       (setq match nil))
     match))
 
+(defun unkillable-scratch-reset-scratch-buffer ()
+  "Reset the contents of the *scratch* buffer to `initial-scratch-message'."
+  (with-current-buffer "*scratch*"
+    (delete-region (point-min) (point-max))
+    (insert (or initial-scratch-message ""))))
+
 (defun unkillable-scratch-buffer ()
-  "A hook designed to be added to hook
-`kill-buffer-query-functions' to prevent buffers matching any
-regexp in variable `unkillable-buffers' from ever being
-killed. Instead of a successful kill, the *scratch* buffer will
-be regenerated. All other buffers will simply not be killed."
+  "Apply the `unkillable-scratch-behavior' to the buffer passed to
+`kill-buffer-query-functions'."
   (let ((buf (buffer-name (current-buffer))))
-    (if (not (unkillable-scratch-matches buf))
-	t
-      (cond ((eq unkillable-scratch-behavior 'kill)
-	     (when (equal buf "*scratch*")
-	       (delete-region (point-min) (point-max))
-	       (insert (or initial-scratch-message "")))t)
-	    ((eq unkillable-scratch-behavior 'bury) (bury-buffer) nil)
-	    (t nil)))))
+    (when (unkillable-scratch-matches buf)
+      (cond ((eq unkillable-scratch-behavior 'kill) t)
+            ((eq unkillable-scratch-behavior 'bury) (progn
+                                                      (when (equal buf "*scratch*")
+                                                        (unkillable-scratch-reset-scratch-buffer))
+                                                      (bury-buffer)
+                                                      nil))
+            (t  (progn
+                  (when (equal buf "*scratch*")
+                    (unkillable-scratch-reset-scratch-buffer))
+                  nil))))))
 
 ;;;###autoload
 (define-minor-mode unkillable-scratch
@@ -116,6 +128,9 @@ be regenerated. All other buffers will simply not be killed."
       (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
     (remove-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)))
 
+
 (provide 'unkillable-scratch)
 
 ;;; unkillable-scratch.el ends here
+
+; LocalWords:  unkillable
