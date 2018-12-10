@@ -48,7 +48,7 @@ The following values of `unkillable-scratch-behavior` are supported
 [persistent-scratch](https://github.com/Fanael/persistent-scratch) is
 definitely worth a look.
 
-## Acknowledgements
+## Acknowledgments
 
 The inspiration to make the `unkillable-buffers` list came from
 [Donald Curtis (milkypostman)](http://emacswiki.org/emacs/RecreateScratchBuffer)
