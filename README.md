@@ -54,6 +54,11 @@ definitely worth a look.
 The inspiration to make the `unkillable-buffers` list came from
 [Donald Curtis (milkypostman)](http://emacswiki.org/emacs/RecreateScratchBuffer)
 
+## Contributors
+
+- [@tarsius](https://github.com/tarsius) for advice on best-practices
+- [@djl](https://github.com/djl) for the feature to persist `*scratch*`-buffer contents
+
 ## Regrets
 
 If I were the type of person to proliferate breaking-changes, I would
