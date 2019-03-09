@@ -29,7 +29,8 @@ is attempted on a buffer matching one or more of the regexp's in the list
 
 This package treats the `*scratch*` buffer specially; in the event of a call to
 `kill-buffer` the buffer contents will be replaced with
-`initial-scratch-message`.
+`initial-scratch-message`. To disable this behavior set
+`unkillable-scratch-do-not-reset-scratch-buffer` to `t`.
 
 The following values of `unkillable-scratch-behavior` are supported
 

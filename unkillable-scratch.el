@@ -59,9 +59,6 @@
 ;;     the last matching buffer to the regexp(s) keeping him from being
 ;;     killed, remove said regexp(s) from `unkillable-buffers'.
 ;;
-;; - defcustom unkillable-scratch-do-not-reset-scratch-buffer
-;;     never repopulate the scratch buffer with `initial-scratch-message'
-;;
 
 
 ;;; Code:
@@ -87,6 +84,11 @@ The following values are recognized:
   :type 'symbol
   :group 'scratch)
 
+(defcustom unkillable-scratch-do-not-reset-scratch-buffer nil
+  "Whether or not to reopulate the scratch buffer with `initial-scratch-message'"
+  :type 'boolean
+  :group 'scratch)
+
 (defun unkillable-scratch-matches (buffer-name)
   "True when BUFFER-NAME matches any regexp contained in `unkillable-buffers'."
   (let ((match t))
@@ -109,12 +111,14 @@ The following values are recognized:
     (if (unkillable-scratch-matches buf)
       (cond ((eq unkillable-scratch-behavior 'kill) t)
             ((eq unkillable-scratch-behavior 'bury) (progn
-                                                      (when (equal buf "*scratch*")
+                                                      (when (and (equal buf "*scratch*")
+                                                                 (not unkillable-scratch-do-not-reset-scratch-buffer))
                                                         (unkillable-scratch-reset-scratch-buffer))
                                                       (bury-buffer)
                                                       nil))
             (t  (progn
-                  (when (equal buf "*scratch*")
+                  (when (and (equal buf "*scratch*")
+                             (not unkillable-scratch-do-not-reset-scratch-buffer))
                     (unkillable-scratch-reset-scratch-buffer))
                   nil)))
       t)))
