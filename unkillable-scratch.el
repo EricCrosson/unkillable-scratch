@@ -33,7 +33,7 @@
 ;; being killed.  Any buffer matching a regexp in the list
 ;; `unkillable-buffers' will not be killed.
 
-;; Only one bufer is in `unkillable-buffers' by default: the *scratch*
+;; Only one buffer is in `unkillable-buffers' by default: the *scratch*
 ;; buffer.
 
 ;; The *scratch* buffer is considered specially; in the event of a call to
@@ -56,7 +56,7 @@
 
 ;; - unkillable-scratch-really-kill
 ;;     actually kill the selected buffer at point.  If this buffer was
-;;     the last matching buffer to the regexp(s) keeping him from being
+;;     the last matching buffer to the regexp(s) keeping it from being
 ;;     killed, remove said regexp(s) from `unkillable-buffers'.
 ;;
 
