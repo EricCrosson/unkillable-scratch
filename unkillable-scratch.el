@@ -102,7 +102,7 @@ The following values are recognized:
   "Reset the contents of the *scratch* buffer to `initial-scratch-message'."
   (with-current-buffer "*scratch*"
     (delete-region (point-min) (point-max))
-    (insert (or initial-scratch-message ""))))
+    (insert (or (substitute-command-keys initial-scratch-message) ""))))
 
 (defun unkillable-scratch-buffer ()
   "Apply the `unkillable-scratch-behavior' to the buffer passed to
